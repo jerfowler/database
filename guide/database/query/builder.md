@@ -32,11 +32,31 @@ You can use any operator you want.  Examples include `IN`, `BETWEEN`, `>`, `=<`,
 	
 	$query = DB::select()->from('users')->where('joindate', 'BETWEEN', array($then, $now));
 
-By default, [DB::select] will select all columns (`SELECT * ...`), but you can also specify which columns you want returned by passing parameters to [DB::select]:
+By default, [DB::select] will select all columns (`SELECT * ...`), but you can also specify which columns you want returned by passing each column as a parameter to [DB::select] or the `select()` method:
 
     $query = DB::select('username', 'password')->from('users')->where('username', '=', 'john');
 
-Now take a minute to look at what this method chain is doing. First, we create a new selection object using the [DB::select] method. Next, we set table(s) using the `from()` method. Last, we search for a specific records using the `where()` method. We can display the SQL that will be executed by casting the query to a string:
+You may append additional column names by calling the select() method multiple times. This is helpful when iterating through a list of possible column names when building a query:
+
+    $columns = array('username', 'password');
+    $query = DB::select()->from('users')->where('username', '=', 'john');
+    foreach($columns as $column)
+    {
+        $query->select($column);
+    }
+
+[!!] When building a query you may call the various methods in any order you wish. Meaning you can call `where()` before calling `from()` or even `select()`. 
+
+If you have a list of column names in an array like in the previous example, rather than iterating through them and calling `select()`, you can use the `select_array()` and have the columns appended in one step:
+
+    $columns = array('username', 'password');
+    $query = DB::select()->select_array($columns)->from('users')->where('username', '=', 'john');
+
+Now take a minute to review what we have learned and then take look at what this method chain is doing: 
+
+    $query = DB::select('username', 'password')->from('users')->where('username', '=', 'john');
+
+First, we create a new selection object using the [DB::select] method. Next, we set table(s) using the `from()` method. Last, we search for a specific records using the `where()` method. We can display the SQL that will be executed by casting the query to a string:
 
     echo Kohana::debug((string) $query);
     // Should display:
@@ -44,15 +64,15 @@ Now take a minute to look at what this method chain is doing. First, we create a
 
 Notice how the column and table names are automatically escaped, as well as the values? This is one of the key benefits of using the query builder.
 
-### Select - AS (column aliases)
+### Select - AS (aliases)
 
-It is also possible to create `AS` aliases when selecting, by passing an array as each parameter to [DB::select]:
+It is possible to create column and table aliases when selecting, by passing an array as a parameter to [DB::select], `select()`, `from()`, or `join()` (See Joins in Advanced Queries). The array should have only two values, the first is the column or table name (string) or an object (See Expression & Subqueries in Advnced Queries). The second value is the alias name for the column or table:
 
-    $query = DB::select(array('username', 'u'), array('password', 'p'))->from('users');
+    $query = DB::select(array('username', 'name'), array('password', 'pwd'))->from(array('users', 'u'));
 
 This query would generate the following SQL:
 
-    SELECT `username` AS `u`, `password` AS `p` FROM `users`
+    SELECT `username` AS `name`, `password` AS `pwd` FROM `users` AS `u`
 
 ### Select - DISTINCT
 
@@ -88,7 +108,7 @@ This query would generate the following SQL:
 
 ## Insert
 
-To create records into the database, use [DB::insert] to create an INSERT query, using `values()` to pass in the data:
+To create records in the database, use [DB::insert] to return a new [Database_Query_Builder_Insert] object. [DB::insert] takes two parameters, the table name and a list of columns to insert. Use the `values()` method to pass in the data for the columns specified:
 
     $query = DB::insert('users', array('username', 'password'))->values(array('fred', 'p@5sW0Rd'));
 
@@ -100,7 +120,7 @@ This query would generate the following SQL:
 
 ## Update
 
-To modify an existing record, use [DB::update] to create an UPDATE query:
+To modify an existing record, use [DB::update] to return a new [Database_Query_Builder_Update] object. [DB::update] takes one parameter, the table to be updated. Use the `set()` method to pass an array of key/value pairs to update the columns specified. Use the `where()` method to limit the rows to be updated:
 
     $query = DB::update('users')->set(array('username' => 'jane'))->where('username', '=', 'john');
 
@@ -112,7 +132,7 @@ This query would generate the following SQL:
 
 ## Delete
 
-To remove an existing record, use [DB::delete] to create a DELETE query:
+To remove an existing record, use [DB::delete] to return a new [Database_Query_Builder_Delete] object. [DB::delete] takes one parameter, the table name. Use the `where()` method to limit the rows to be deleted:
 
     $query = DB::delete('users')->where('username', 'IN', array('john', 'jane'));
 
@@ -144,7 +164,7 @@ If you want to do a LEFT, RIGHT or INNER JOIN you would do it like this `join('c
 
 This query would generate the following SQL:
 
-    SELECT `authors`.`name`, `posts`.`content` FROM `authors` LEFT JOIN `posts` ON (`authors`.`id` = `posts`.`author_id`) WHERE `authors`.`name` = 'smith'
+    SELECT * FROM `authors` LEFT JOIN `posts` ON (`authors`.`id` = `posts`.`author_id`) WHERE `authors`.`name` = 'smith'
 
 [!!] When joining multiple tables with similar column names, it's best to prefix the columns with the table name or table alias to avoid errors. Ambiguous column names should also be aliased so that they can be referenced easier.
 
