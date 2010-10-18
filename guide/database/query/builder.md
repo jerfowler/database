@@ -22,7 +22,7 @@ Limiting the results of queries is done using the `where()`, `and_where()` and `
 
     $query = DB::select()->from('users')->where('username', '=', 'john');
 
-#### `and_where()` & `or_where()`
+#### Multiple Conditions
 
 Multiple `where()` methods may be used to string together multiple clauses connected by the boolean operator in the method's prefix. The `where()` method is a wrapper that just calls `and_where()`. 
 
@@ -61,12 +61,12 @@ You may append additional column names by calling the select() method multiple t
 
 ### Select - `select_array()`
 
-If you have a list of column names in an array like in the previous example, rather than iterating through them and calling `select()`, you can use the `select_array()` and have the columns appended in one step:
+If you have a list of column names in an array like in the previous example, rather than iterating through them and calling `select()`, you can use the `select_array()` method and have the columns appended in one step:
 
     $columns = array('username', 'password');
     $query = DB::select()->select_array($columns)->from('users')->where('username', '=', 'john');
 
-### Select - Reviewing the Generated SQL
+### Select - Quick Review & Displaying the SQL
 
 Now take a minute to review what we have learned and then take look at what this method chain is doing: 
 
