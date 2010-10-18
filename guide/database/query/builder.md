@@ -10,13 +10,13 @@ Each type of database query is represented by a different class, each with their
 
     $query = DB::select();
 
-### Select - `from()`
+### Select - FROM
 
 Query Builder methods return a reference to itself so that method chaining may be used. Select queries ussually require a table and they are referenced using the `from()` method. The `from()` method takes one parameter which can be the table name (string), an array of two strings (table name and alias), or an object (See Subqueries in the Advanced Queries section below). 
 
     $query = DB::select()->from('users');
 
-### Select - `where()`
+### Select - WHERE
 
 Limiting the results of queries is done using the `where()`, `and_where()` and `or_where()` methods. These methods take three parameters: a column, an operator, and a value. 
 
@@ -46,7 +46,7 @@ By default, [DB::select] will select all columns (`SELECT * ...`), but you can a
 
     $query = DB::select('username', 'password')->from('users')->where('username', '=', 'john');
 
-### Select - `select()`
+#### Select - `select()`
 
 You may append additional column names by calling the select() method multiple times. This is helpful when iterating through a list of possible column names when building a query:
 
@@ -59,7 +59,7 @@ You may append additional column names by calling the select() method multiple t
 
 [!!] When building a query you may call the various methods in any order you wish. Meaning you can call `where()` before calling `from()` or even `select()`. 
 
-### Select - `select_array()`
+#### Select - `select_array()`
 
 If you have a list of column names in an array like in the previous example, rather than iterating through them and calling `select()`, you can use the `select_array()` method and have the columns appended in one step:
 
@@ -82,7 +82,7 @@ Notice how the column and table names are automatically escaped, as well as the 
 
 ### Select - AS (aliases)
 
-It is possible to create column and table aliases when selecting, by passing an array as a parameter to [DB::select], `select()`, `from()`, or `join()` (See Joins in Advanced Queries). The array should have only two values, the first is the column or table name (string) or an object (See Expression & Subqueries in Advnced Queries). The second value is the alias name for the column or table:
+It is possible to create column and table aliases when selecting, by passing an array as a parameter to [DB::select], `select()`, `from()`, or `join()` (See Joins in Advanced Queries). The array should have only two values, the first is the column or table name (string) or an object (See Expressions & Subqueries in Advnced Queries). The second value is the alias name for the column or table:
 
     $query = DB::select(array('username', 'name'), array('password', 'pwd'))->from(array('users', 'u'));
 
