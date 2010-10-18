@@ -10,21 +10,25 @@ Each type of database query is represented by a different class, each with their
 
     $query = DB::select();
 
-### Select - FROM
+### Select - `from()`
 
 Query Builder methods return a reference to itself so that method chaining may be used. Select queries ussually require a table and they are referenced using the `from()` method. The `from()` method takes one parameter which can be the table name (string), an array of two strings (table name and alias), or an object (See Subqueries in the Advanced Queries section below). 
 
     $query = DB::select()->from('users');
 
-### Select - WHERE
+### Select - `where()`
 
 Limiting the results of queries is done using the `where()`, `and_where()` and `or_where()` methods. These methods take three parameters: a column, an operator, and a value. 
 
     $query = DB::select()->from('users')->where('username', '=', 'john');
 
+#### `and_where()` & `or_where()`
+
 Multiple `where()` methods may be used to string together multiple clauses connected by the boolean operator in the method's prefix. The `where()` method is a wrapper that just calls `and_where()`. 
 
     $query = DB::select()->from('users')->where('username', '=', 'john')->or_where('username', '=', 'jane');
+
+#### Operator Examples
 	
 You can use any operator you want.  Examples include `IN`, `BETWEEN`, `>`, `=<`, `!=`, etc.  Use an array for operators that require more than one value.
 
@@ -41,6 +45,8 @@ You can use any operator you want.  Examples include `IN`, `BETWEEN`, `>`, `=<`,
 By default, [DB::select] will select all columns (`SELECT * ...`), but you can also specify which columns you want returned by passing each column as a parameter to [DB::select] or the `select()` method:
 
     $query = DB::select('username', 'password')->from('users')->where('username', '=', 'john');
+
+### Select - `select()`
 
 You may append additional column names by calling the select() method multiple times. This is helpful when iterating through a list of possible column names when building a query:
 
@@ -60,7 +66,7 @@ If you have a list of column names in an array like in the previous example, rat
     $columns = array('username', 'password');
     $query = DB::select()->select_array($columns)->from('users')->where('username', '=', 'john');
 
-### Select - SQL
+### Select - Reviewing the Generated SQL
 
 Now take a minute to review what we have learned and then take look at what this method chain is doing: 
 
