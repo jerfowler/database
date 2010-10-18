@@ -10,9 +10,13 @@ Each type of database query is represented by a different class, each with their
 
     $query = DB::select();
 
+### Select - FROM
+
 Query Builder methods return a reference to itself so that method chaining may be used. Select queries ussually require a table and they are referenced using the `from()` method. The `from()` method takes one parameter which can be the table name (string), an array of two strings (table name and alias), or an object (See Subqueries in the Advanced Queries section below). 
 
     $query = DB::select()->from('users');
+
+### Select - WHERE
 
 Limiting the results of queries is done using the `where()`, `and_where()` and `or_where()` methods. These methods take three parameters: a column, an operator, and a value. 
 
@@ -32,6 +36,8 @@ You can use any operator you want.  Examples include `IN`, `BETWEEN`, `>`, `=<`,
 	
 	$query = DB::select()->from('users')->where('joindate', 'BETWEEN', array($then, $now));
 
+### Select - Columns
+
 By default, [DB::select] will select all columns (`SELECT * ...`), but you can also specify which columns you want returned by passing each column as a parameter to [DB::select] or the `select()` method:
 
     $query = DB::select('username', 'password')->from('users')->where('username', '=', 'john');
@@ -47,10 +53,14 @@ You may append additional column names by calling the select() method multiple t
 
 [!!] When building a query you may call the various methods in any order you wish. Meaning you can call `where()` before calling `from()` or even `select()`. 
 
+### Select - `select_array()`
+
 If you have a list of column names in an array like in the previous example, rather than iterating through them and calling `select()`, you can use the `select_array()` and have the columns appended in one step:
 
     $columns = array('username', 'password');
     $query = DB::select()->select_array($columns)->from('users')->where('username', '=', 'john');
+
+### Select - SQL
 
 Now take a minute to review what we have learned and then take look at what this method chain is doing: 
 
