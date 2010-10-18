@@ -46,7 +46,7 @@ By default, [DB::select] will select all columns (`SELECT * ...`), but you can a
 
     $query = DB::select('username', 'password')->from('users')->where('username', '=', 'john');
 
-#### Select - `select()`
+#### Selecting columns with `select()`
 
 You may append additional column names by calling the select() method multiple times. This is helpful when iterating through a list of possible column names when building a query:
 
@@ -59,7 +59,7 @@ You may append additional column names by calling the select() method multiple t
 
 [!!] When building a query you may call the various methods in any order you wish. Meaning you can call `where()` before calling `from()` or even `select()`. 
 
-#### Select - `select_array()`
+#### Selecting columns with `select_array()`
 
 If you have a list of column names in an array like in the previous example, rather than iterating through them and calling `select()`, you can use the `select_array()` method and have the columns appended in one step:
 
